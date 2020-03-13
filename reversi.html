@@ -1,0 +1,29 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+	<title>JS Reversi</title>
+	<meta name="description" content="JavaScript Checkers">
+	<meta name="author" content="Jeremy Qian">
+
+	<link rel="stylesheet" href="css/reversi.css">
+
+</head>
+
+<body>
+	<h1 class="fullWide"> JS Reversi </h1>
+	<div class="container">
+	<div id="gameBoardDiv"> </div>
+	<div id="gameInfoDiv"> </div>
+	</div>
+	<script src="js/dumbAIs.js"></script>
+	<script src="js/minMaxAI.js"></script>
+	<script src="js/reversi.js"></script>
+	<script>
+								//Game Div      Info Div      initialPieces   Init Move
+		let game = new Reversi("gameBoardDiv", "gameInfoDiv", null,           null);
+	</script>
+</body>
+</html>
