@@ -18,11 +18,16 @@ class StatsManager {
 
 	setWinnerInfo(winner) {
 		this.turnReversiPiece.setType(winner);
+		var winnerText = "";
 		if (winner != null) {
-			this.curTurnTextHeader.innerHTML = "Has Won the Game!";
+			winnerText = (winner == PieceEnum.white) ? "White": "Black" + " Has Won the Game!";
+			this.curTurnTextHeader.innerHTML = winnerText;
 		} else {
-			this.curTurnTextHeader.innerHTML = "Its a Tie!";
+			winnerText = "No one has won, its a Tie!"
+			this.curTurnTextHeader.innerHTML = winnerText;
 		}
+		alert(winnerText);
+
 	}
 
 	setTurnInfo(type, computerThinking) {
@@ -272,7 +277,6 @@ class Reversi {
 		}
 
 		this.winner = this.checkWinner(count[0], count[1], count[2]);
-
 		if (this.winner == null) { //No one
 			this.setWinner(this.winner);
 		} else if (this.winner === PieceEnum.white || this.winner === PieceEnum.black) {
