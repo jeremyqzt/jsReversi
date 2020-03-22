@@ -4,7 +4,7 @@ class MinMaxAlgo {
 		var avail = curGame.avail;
 		var gameCpy = null;
 		var maxOrMin = 64;
-		
+	
 		if(turn == PieceEnum.black) {
 			maxOrMin = -64;
 		}
@@ -15,7 +15,7 @@ class MinMaxAlgo {
 		var moveScores = [];
 
 		if (depth > 0) {
-			for (var i = 0; i < avail.length; i++) {
+			for (var i = 0; (i < avail.length) && (avail.length > 0); i++) {
 				//console.log(avail);
 				gameCpy = curGame.board.getStrippedPieces(); //Arrays are mutable and passed as reference, must rebuild
 				//console.log(gameCpy);

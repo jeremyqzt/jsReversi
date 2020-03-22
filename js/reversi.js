@@ -26,8 +26,6 @@ class StatsManager {
 			winnerText = "No one has won, its a Tie!"
 			this.curTurnTextHeader.innerHTML = winnerText;
 		}
-		alert(winnerText);
-
 	}
 
 	setTurnInfo(type, computerThinking) {
@@ -214,29 +212,40 @@ class Reversi {
 	async moveCallBack(i, j, pieceSelected) {
 		//console.log("Move Called Back, Location: " + i +", " + j + " Piece Selected: " + pieceSelected);
 		//this.board.unHighlightGrid();
-		if (!pieceSelected)
-		{
+		if (!pieceSelected)	{
 			if (this.computeMove(i, j, this.turn) && !this.computerMakingMove && (this.statsManager.getAiSelect() != 0)) {
 				this.computerMakingMove = true;
 				var diff = this.statsManager.getAiSelect();
 				var move = null;
 				var moveChoice = null;
+				var whiteCantMove = true;
 
-				if (diff == 1) {
-					move = RandomAI.getRandomMove(this.avail);
-					await new Promise(r => setTimeout(r, 100)); //Sleep according to difficulty
-				} else if (diff == 2) {
-					move = GreedyAI.getGreedyMove(this.avail, this.wouldBeFlippedPieces);
-					await new Promise(r => setTimeout(r, 300)); //Sleep according to difficulty
-				} else if (diff == 3) {
-					//index 0 is the amount of +ve the algo sees
-					moveChoice = MinMaxAlgo.getMinMaxMove(this.board.getPieces(), 3, this.turn);
-					move = moveChoice[1];
-					await new Promise(r => setTimeout(r, 600)); //Sleep according to difficulty
+				while (whiteCantMove) {
+					whiteCantMove = false;
+					if (diff == 1) {
+						move = RandomAI.getRandomMove(this.avail);
+						await new Promise(r => setTimeout(r, 100)); //Sleep according to difficulty
+					} else if (diff == 2) {
+						move = GreedyAI.getGreedyMove(this.avail, this.wouldBeFlippedPieces);
+						await new Promise(r => setTimeout(r, 300)); //Sleep according to difficulty
+					} else if (diff == 3) {
+						//index 0 is the amount of +ve the algo sees
+						moveChoice = MinMaxAlgo.getMinMaxMove(this.board.getPieces(), 3, this.turn);
+						move = moveChoice[1];
+						await new Promise(r => setTimeout(r, 600)); //Sleep according to difficulty
+					}
+					if (this.avail.length > 0){
+						this.computeMove(move[0], move[1], this.turn);
+						console.log(whiteCantMove);
+						whiteCantMove = (this.avail.length == 0)? true: false;
+					} else {
+						this.turn = (this.turn == PieceEnum.white) ? PieceEnum.black: PieceEnum.white;
+						this.recomputeMoves(true);
+					}
 				}
-				this.computeMove(move[0], move[1], this.turn);
 				this.computerMakingMove = false;
 			}
+
 		}
 	}
 
@@ -305,6 +314,12 @@ class Reversi {
 			return false;
 		}
 
+		this.recomputeMoves(false);
+
+		return true;
+	}
+
+	recomputeMoves(forceHighlight) {
 		this.updateStats();
 		this.board.unHighlightGrid();
 		var moves = this.board.getExtremePieces()
@@ -312,11 +327,10 @@ class Reversi {
 		//console.log(this.avail);
 
 		//Computer knows where to go, no need highlight, human needs highlighting
-		if (this.computerMakingMove || (this.statsManager.getAiSelect() == 0)) {
+		if (this.computerMakingMove || (this.statsManager.getAiSelect() == 0) || forceHighlight) {
 			this.board.highlightGrid(this.avail);
 		}
 
-		return true;
 	}
 
 	computeAvailableMoves(moves, turn) {

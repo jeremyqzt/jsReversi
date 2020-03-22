@@ -8,6 +8,7 @@ class GreedyAI {
 				retIdx = i;
 			}
 		}
+
 		return moves[retIdx];
 	}
 }
